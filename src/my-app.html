@@ -21,7 +21,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="my-icons.html">
-<link rel="import" href="shopper-auth.html">
 
 <dom-module id="my-app">
   <template>
@@ -57,6 +56,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: black;
         font-weight: bold;
       }
+      .sign-in {
+        text-decoration: none;
+        color: white;
+      }
     </style>
 
     <app-location route="{{route}}"></app-location>
@@ -71,6 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a name="receipts" href="/receipts">Receipts</a>
           <a name="family" href="/family">Family</a>
           <a name="friends" href="/friends">Friends</a>
+          <a name="tos" href="/tos">Terms of service</a>
         </iron-selector>
       </app-drawer>
 
@@ -81,13 +85,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>Shopper-ninja</div>
-            <shopper-auth></shopper-auth>
+            <a class="sign-in" href="/auth">sign-in / sign-up</a>
           </app-toolbar>
         </app-header>
 
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404"
-            role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+          <shopper-auth name="auth"></shopper-auth>
           <shopper-list name="list"></shopper-list>
+          <shopper-tos name="tos"></shopper-404>
           <shopper-404 name="404"></shopper-404>
         </iron-pages>
       </app-header-layout>
