@@ -14,7 +14,6 @@
   ],
   "includeDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
-    "bower_components/web-animations-js/web-animations.html"
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
   ]
 }
