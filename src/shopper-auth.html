@@ -14,20 +14,20 @@
     <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError"></firebase-auth>
     <paper-menu-button>
       <paper-button class="dropdown-trigger">sign in / sign up</paper-button>
-      <paper-menu class="dropdown-content" attr-for-selected="sign-in-provider" on-iron-select="_log">
-        <paper-item sign-in-provider="google">Google</paper-item>
-        <paper-item sign-in-provider="facebook">Facebook</paper-item>
-        <paper-item sign-in-provider="twitter">Twitter</paper-item>
-        <paper-item sign-in-provider="github">GitHub</paper-item>
-        <paper-item sign-in-provider="email-password">Email/Password</paper-item>
+      <paper-menu class="dropdown-content" attr-for-selected="provider" on-iron-select="_signIn">
+        <paper-item provider="google">Google</paper-item>
+        <paper-item provider="facebook">Facebook</paper-item>
+        <paper-item provider="twitter">Twitter</paper-item>
+        <paper-item provider="github">GitHub</paper-item>
+        <paper-item provider="email-password">Email/Password</paper-item>
       </paper-menu>
     </paper-menu-button>
   </template>
   <script>
     Polymer({
       is: 'shopper-auth',
-      _log: function (e) {
-        return console.log(JSON.stringify(e.detail.item))
+      _signIn: function (e) {
+        return console.log(this.$.auth.signInWithPopup(e.target.selected))
       }
     });
   </script>
