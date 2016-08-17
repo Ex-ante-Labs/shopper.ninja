@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
+ <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="firebase-ui-styles.html">
 <script src="https://www.gstatic.com/firebasejs/ui/live/0.4/firebase-ui-auth.js"></script>
 
@@ -9,31 +9,32 @@
     <style include="firebase-ui-styles">
       :host {
         display: block;
+        height: 100%;
+        @apply(--layout);
+        @apply(--layout-center);
+        @apply(--layout-center-justified);
+      }
+      #container {
+        width: 100%;
       }
     </style>
-    <firebase-app auth-domain="shopper-ninja.firebaseapp.com" database-url="https://shopper-ninja.firebaseio.com" api-key="AIzaSyAifUgLHveo3BH3fr7ovdfySgB7vRSyX-0" storage-bucket="shopper-ninja.appspot.com">
-    </firebase-app>
     <firebase-auth id="auth" user="{{user}}" on-status-known-changed="_startUi"></firebase-auth>
     <div id="container"></div>
   </template>
   <script>
     Polymer({
       is: 'shopper-auth',
-      observers: ['_log(statusKnown)'],
-      _log(e, a) {
-        return console.log(e, a)
-      },
-      _startUi(e, statusKnown) {
+      _startUi: function (e, statusKnown) {
         if (statusKnown.value) {
           // FirebaseUI config.
           var uiConfig = {
-            'signInSuccessUrl': '/success',
+            'signInSuccessUrl': '/list',
             'signInOptions': [
               // Leave the lines as is for the providers you want to offer your users.
-              firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+              // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
               firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-              firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-              firebase.auth.GithubAuthProvider.PROVIDER_ID,
+              // firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+              // firebase.auth.GithubAuthProvider.PROVIDER_ID,
               firebase.auth.EmailAuthProvider.PROVIDER_ID
             ],
             // Terms of service url.

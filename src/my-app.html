@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="my-icons.html">
 
 <dom-module id="my-app">
@@ -56,14 +57,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: black;
         font-weight: bold;
       }
+
       .sign-in {
-        text-decoration: none;
+        /*text-decoration: none;*/
         color: white;
+      }
+
+      iron-pages {
+        height: 100%;
       }
     </style>
 
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <firebase-app auth-domain="shopper-ninja.firebaseapp.com" database-url="https://shopper-ninja.firebaseio.com"
+        api-key="AIzaSyAifUgLHveo3BH3fr7ovdfySgB7vRSyX-0" storage-bucket="shopper-ninja.appspot.com">
+    </firebase-app>
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
@@ -74,7 +83,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a name="receipts" href="/receipts">Receipts</a>
           <a name="family" href="/family">Family</a>
           <a name="friends" href="/friends">Friends</a>
-          <a name="tos" href="/tos">Terms of service</a>
+          <a name="tos" href="/tos">Terms of Service</a>
         </iron-selector>
       </app-drawer>
 
@@ -85,15 +94,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>Shopper-ninja</div>
-            <a class="sign-in" href="/auth">sign-in / sign-up</a>
+            <a class="sign-in" href="/auth">Sign in</a>
           </app-toolbar>
         </app-header>
 
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404"
+            role="main">
           <shopper-auth name="auth"></shopper-auth>
           <shopper-list name="list"></shopper-list>
           <shopper-tos name="tos"></shopper-404>
-          <shopper-404 name="404"></shopper-404>
+            <shopper-404 name="404"></shopper-404>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
