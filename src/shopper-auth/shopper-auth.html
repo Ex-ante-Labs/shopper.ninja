@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
- <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="firebase-ui-styles.html">
 <script src="https://www.gstatic.com/firebasejs/ui/live/0.4/firebase-ui-auth.js"></script>
 
@@ -13,9 +13,12 @@
         @apply(--layout);
         @apply(--layout-center);
         @apply(--layout-center-justified);
+        /*background-color: lightPink;*/
       }
+
       #container {
         width: 100%;
+        /*background-color: lightGreen;*/
       }
     </style>
     <firebase-auth id="auth" user="{{user}}" on-status-known-changed="_startUi"></firebase-auth>
@@ -24,7 +27,10 @@
   <script>
     Polymer({
       is: 'shopper-auth',
-      _startUi: function (e, statusKnown) {
+      ready: function() {
+        this.scopeSubtree(this.$.container, true);
+      },
+      _startUi: function(e, statusKnown) {
         if (statusKnown.value) {
           // FirebaseUI config.
           var uiConfig = {
