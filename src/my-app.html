@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="my-icons.html">
 
 <dom-module id="my-app">
@@ -61,6 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .sign-in {
         /*text-decoration: none;*/
         color: white;
+        @apply(--paper-font-subhead);
       }
 
       iron-pages {
@@ -102,8 +104,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <shopper-auth name="auth"></shopper-auth>
           <shopper-list name="list"></shopper-list>
-          <shopper-tos name="tos"></shopper-404>
-            <shopper-404 name="404"></shopper-404>
+          <shopper-tos name="tos"></shopper-tos>
+          <shopper-404 name="404"></shopper-404>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
