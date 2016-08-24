@@ -1,0 +1,14 @@
+{
+  "en": {
+    "main_title": "Shopper-ninja",
+    "sign_in": "Sign in"
+  },
+  "ru": {
+    "main_title": "Покупатель-низя",
+    "sign_in": "Войти"
+  },
+  "lv": {
+    "main_title": "Pircejs-ninža",
+    "sign_in": "Pieslēgties"
+  }
+}

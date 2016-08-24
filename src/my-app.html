@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="my-icons.html">
 
 <dom-module id="my-app">
@@ -70,10 +71,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
+    <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
-    <firebase-app auth-domain="shopper-ninja.firebaseapp.com" database-url="https://shopper-ninja.firebaseio.com"
-        api-key="AIzaSyAifUgLHveo3BH3fr7ovdfySgB7vRSyX-0" storage-bucket="shopper-ninja.appspot.com">
+    <firebase-app auth-domain="shopper-ninja.firebaseapp.com" database-url="https://shopper-ninja.firebaseio.com" api-key="AIzaSyAifUgLHveo3BH3fr7ovdfySgB7vRSyX-0" storage-bucket="shopper-ninja.appspot.com">
     </firebase-app>
 
     <app-drawer-layout fullbleed>
@@ -95,13 +95,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>Shopper-ninja</div>
-            <a class="sign-in" href="/auth">Sign in</a>
+            <div main-title>[[localize('main_title')]]</div>
+            <a class="sign-in" href="/auth">[[localize('sign_in')]]</a>
           </app-toolbar>
         </app-header>
 
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404"
-            role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <shopper-auth name="auth"></shopper-auth>
           <shopper-list name="list"></shopper-list>
           <shopper-tos name="tos"></shopper-tos>
@@ -115,17 +114,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'my-app',
 
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+
       properties: {
         page: {
           type: String,
           reflectToAttribute: true,
           observer: '_pageChanged'
+        },
+        language: {
+          type: String,
+          computed: '_language(queryParams.language)'
         }
+      },
+
+      attached: function() {
+        this.loadResources(this.resolveUrl('locales.json'))
       },
 
       observers: [
         '_routePageChanged(routeData.page)'
       ],
+
+      _language: function (language) {
+        // console.log(language)
+        return language ? language : 'en'
+      },
 
       _routePageChanged: function(page) {
         this.page = page || 'list';
