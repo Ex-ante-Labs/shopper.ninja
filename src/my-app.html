@@ -126,7 +126,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         language: {
           type: String,
-          computed: '_language(queryParams.language, resources)'
+          computed: '_language(resources)'
         }
       },
 
@@ -138,8 +138,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_routePageChanged(routeData.page)'
       ],
 
-      _language: function (language, resources) {
-        // console.log(language)
+      _language: function (resources) {
+        // console.log(this.queryParams.language, resources)
+        const language = this.queryParams.language
         return language && resources[language] ? language : 'en'
       },
 
