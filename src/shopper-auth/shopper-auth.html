@@ -29,9 +29,18 @@
   <script>
     Polymer({
       is: 'shopper-auth',
+
+      properties: {
+        user: {
+          type: Object,
+          notify: true
+        }
+      },
+
       ready: function() {
         this.scopeSubtree(this.$.container, true);
       },
+
       _startUi: function(e, statusKnown) {
         if (statusKnown.value) {
           var facebook = new firebase.auth.FacebookAuthProvider();
@@ -69,6 +78,7 @@
           ui.start(this.$.container, uiConfig);
         }
       }
+
     });
   </script>
 </dom-module>

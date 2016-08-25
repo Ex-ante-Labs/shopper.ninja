@@ -14,9 +14,9 @@
       }
     </style>
 
-    <firebase-query path="_path(user)" data="{{list}}"></firebase-query>
+    <firebase-query path="[[_path(path, uid)]]" data="{{shoppingList}}"></firebase-query>
 
-    <template is="dom-repeat" items="[[list]]">
+    <template is="dom-repeat" items="[[shoppingList]]">
       <paper-icon-item>[[item.n]]</paper-icon-item>
     </template>
 
@@ -24,7 +24,18 @@
 
   <script>
     Polymer({
-      is: 'shopper-list'
+
+      is: 'shopper-list',
+
+      properties: {
+        path: String,
+        uid: String
+      },
+
+      _path: function (path, uid) {
+        return path + '/' + uid + '/shoppingList'
+      }
+
     });
   </script>
 
