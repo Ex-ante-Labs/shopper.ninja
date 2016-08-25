@@ -4,7 +4,9 @@
 <link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
 
 <dom-module id="shopper-list">
+
   <template>
+
     <style include="shared-styles">
       :host {
         display: block;
@@ -12,10 +14,12 @@
       }
     </style>
 
-    <firebase-query path="common-list" data="{{list}}"></firebase-query>
+    <firebase-query path="_path(user)" data="{{list}}"></firebase-query>
+
     <template is="dom-repeat" items="[[list]]">
       <paper-icon-item>[[item.n]]</paper-icon-item>
     </template>
+
   </template>
 
   <script>
@@ -23,4 +27,5 @@
       is: 'shopper-list'
     });
   </script>
+
 </dom-module>

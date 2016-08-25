@@ -9,20 +9,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/paper-styles/typography.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="my-icons.html">
 
 <dom-module id="my-app">
@@ -73,14 +75,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
-    <firebase-app auth-domain="shopper-ninja.firebaseapp.com" database-url="https://shopper-ninja.firebaseio.com" api-key="AIzaSyAifUgLHveo3BH3fr7ovdfySgB7vRSyX-0" storage-bucket="shopper-ninja.appspot.com">
+    <firebase-app auth-domain="shopper-ninja.firebaseapp.com" database-url="https://shopper-ninja.firebaseio.com"
+        api-key="AIzaSyAifUgLHveo3BH3fr7ovdfySgB7vRSyX-0" storage-bucket="shopper-ninja.appspot.com">
     </firebase-app>
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
-      <app-drawer>
+      <app-drawer swipe-open id="drawer">
         <app-toolbar>Menu</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation"
+            on-iron-activate="_drawerSelected">
           <a name="list" href="/list">Shopping list</a>
           <a name="receipts" href="/receipts">Receipts</a>
           <a name="family" href="/family">Family</a>
@@ -95,12 +99,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-            <div main-title>[[localize('main_title')]]</div>
-            <a class="sign-in" href="/auth">[[localize('sign_in')]]</a>
+            <div main-title>[[localize('mainTitle')]]</div>
+            <a class="sign-in" href="/auth">[[localize('signIn')]]</a>
           </app-toolbar>
+          <paper-tabs selected=0>
+            <paper-tab>[[localize('shoppingList')]]</paper-tab>
+            <paper-tab>[[localize('shoppingCart')]]</paper-tab>
+          </paper-tabs>
         </app-header>
 
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404"
+            role="main">
           <shopper-auth name="auth"></shopper-auth>
           <shopper-list name="list"></shopper-list>
           <shopper-tos name="tos"></shopper-tos>
@@ -138,7 +147,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_routePageChanged(routeData.page)'
       ],
 
-      _language: function (resources) {
+      _language: function(resources) {
         // console.log(this.queryParams.language, resources)
         const language = this.queryParams.language
         return language && resources[language] ? language : 'en'
@@ -157,7 +166,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _showPage404: function() {
         this.page = '404';
+      },
+
+      _drawerSelected() {
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
       }
+
     });
   </script>
 </dom-module>

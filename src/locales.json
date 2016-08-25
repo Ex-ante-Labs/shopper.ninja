@@ -1,14 +1,20 @@
 {
   "en": {
-    "main_title": "Shopper-ninja",
-    "sign_in": "Sign in"
+    "mainTitle": "Shopper-ninja",
+    "signIn": "Sign in",
+    "shoppingList": "SHOPPING LIST",
+    "shoppingCart": "SHOPPING CART"
   },
   "ru": {
-    "main_title": "Покупатель-нинзя",
-    "sign_in": "Войти"
+    "mainTitle": "Покупатель-нинзя",
+    "signIn": "Войти",
+    "shoppingList": "СПИСОК ПОКУПОК",
+    "shoppingCart": "КОРЗИНА ПОКУПОК"
   },
   "lv": {
-    "main_title": "Pircejs-ninža",
-    "sign_in": "Pieslēgties"
+    "mainTitle": "Pircejs-ninža",
+    "signIn": "Pieslēgties",
+    "shoppingList": "PIRKŠANAS SARAKSTS",
+    "shoppingCart": "PIRKŠANAS GROZS"
   }
 }
