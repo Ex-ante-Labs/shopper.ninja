@@ -1,0 +1,52 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html" />
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html" />
+<link rel="import" href="shopper-list.html" />
+<link rel="import" href="shopper-categories.html" />
+
+<dom-module id="shopper-lists">
+
+  <template>
+
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+    <neon-animated-pages attr-for-selected="name" selected="[[selectedTab]]">
+      <shopper-list name="list" path="[[_usersPath(path, uid)]]" selected-tab="{{selectedTab}}"></shopper-list>
+      <shopper-categories name="categories" path="[[_categoriesPath(path)]]"></shopper-categories>
+    </neon-animated-pages>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'shopper-lists',
+
+      properties: {
+        path: {
+          type: String,
+          value: ''
+        },
+        uid: String,
+        selectedTab: {
+          type: String,
+          value: 'list',
+          notify: true
+        }
+      },
+
+      _usersPath: function(path, uid) {
+        return path + '/users/' + uid
+      },
+
+      _categoriesPath: function(path) {
+        return path + '/products'
+      }
+
+    });
+  </script>
+
+</dom-module>

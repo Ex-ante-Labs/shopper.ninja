@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../firebase-ui-auth/firebase-ui-styles.html">
 <link rel="import" href="../firebase-ui-auth/firebase-ui-auth.html">
 <link rel="import" href="../facebook/facebook-init.html">
@@ -10,10 +11,15 @@
       :host {
         display: block;
         height: 100%;
-        @apply(--layout);
+        @apply(--layout-vertical);
         @apply(--layout-center);
-        @apply(--layout-center-justified);
-        /*background-color: lightPink;*/
+        @apply(--layout-around-justified);
+        background-color: var(--light-primary-color);
+      }
+
+      iron-icon {
+        --iron-icon-height: 320px;
+        --iron-icon-width: 320px;
       }
 
       #container {
@@ -21,6 +27,7 @@
         /*background-color: lightGreen;*/
       }
     </style>
+    <iron-icon src="../../images/manifest/icon-512x512.png"></iron-icon>
     <div id="container"></div>
     <shopper-facebook app-id="1729227607329104"></shopper-facebook>
   </template>
@@ -30,15 +37,13 @@
       is: 'shopper-auth',
 
       properties: {
-        statusKnown: {
-          type: Boolean,
-          observer: '_startUi'
-        },
+        statusKnown: Boolean,
         authTarget: HTMLElement
       },
 
       observers: [
-        '_authTargetChanged(authTarget, isAttached)'
+        '_authTargetChanged(authTarget, isAttached)',
+        '_statusKnownChanged(statusKnown, authTarget)'
       ],
 
       ready: function() {
@@ -46,6 +51,7 @@
       },
 
       _authTargetChanged: function(authTarget, isAttached) {
+        console.log(authTarget, isAttached)
         if (!isAttached) {
           return;
         }
@@ -56,8 +62,8 @@
         }
       },
 
-      _startUi: function(statusKnown) {
-        if (statusKnown) {
+      _statusKnownChanged: function(statusKnown, authTarget) {
+        if (this._isValidAuthTarget(authTarget) && statusKnown) {
           var facebook = new firebase.auth.FacebookAuthProvider();
           facebook.addScope('public_profile');
           facebook.addScope('email');
@@ -93,6 +99,15 @@
           // The start method will wait until the DOM is loaded.
           ui.start(this.$.container, uiConfig);
         }
+      },
+
+      /**
+       * Returns true if the auth target is a valid HTMLElement.
+       *
+       * @return {boolean}
+       */
+      _isValidAuthTarget: function() {
+        return this.authTarget instanceof HTMLElement;
       }
 
     });

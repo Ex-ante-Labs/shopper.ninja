@@ -24,7 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="shopper-theme.html">
@@ -117,20 +116,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>[[localize('mainTitle')]]</div>
-            <a sign-in href="/auth" tabindex="-1">
-              <paper-button raised>[[localize('signIn')]]</paper-button>
-            </a>
           </app-toolbar>
-          <paper-tabs selected=0>
-            <paper-tab>[[localize('shoppingList')]]</paper-tab>
-            <paper-tab>[[localize('shoppingCart')]]</paper-tab>
+          <paper-tabs attr-for-selected="name" selected="[[selectedTab]]">
+            <paper-tab name="list">[[localize('shoppingList')]]</paper-tab>
+            <paper-tab name="cart">[[localize('shoppingCart')]]</paper-tab>
           </paper-tabs>
         </app-header>
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404"
             role="main">
           <shopper-auth name="auth" status-known="[[statusKnown]]" auth-target="auth"></shopper-auth>
-          <shopper-list name="list" path="users" uid="[[user.uid]]"></shopper-list>
+          <shopper-lists name="lists" uid="[[user.uid]]" selected-tab="{{selectedTab}}"></shopper-lists>
           <shopper-tos name="tos"></shopper-tos>
           <shopper-404 name="404"></shopper-404>
         </iron-pages>
@@ -173,7 +169,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _routePageChanged: function(page) {
-        this.page = page || 'list';
+        this.page = page || 'lists';
       },
 
       _pageChanged: function(page) {

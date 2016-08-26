@@ -1,0 +1,33 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+
+<dom-module id="shopper-categories">
+
+  <template>
+
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+    <firebase-query path="[[path]]" data="{{categories}}"></firebase-query>
+
+    <template is="dom-repeat" items="[[categories]]" as="category">
+      <div>[[category.name]]</div>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'shopper-categories',
+
+      properties: {
+        path: String
+      }
+
+    });
+  </script>
+
+</dom-module>

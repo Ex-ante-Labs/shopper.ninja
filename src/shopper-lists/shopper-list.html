@@ -22,12 +22,12 @@
       }
     </style>
 
-    <firebase-query path="[[_path(path, uid)]]" data="{{shoppingList}}"></firebase-query>
+    <firebase-query path="[[path]]" data="{{shoppingList}}"></firebase-query>
 
     <template is="dom-repeat" items="[[shoppingList]]">
       <paper-icon-item>[[item.n]]</paper-icon-item>
     </template>
-    <paper-fab icon=add></paper-fab>
+  <paper-fab icon=add on-tap="_showCategories"></paper-fab>
   </template>
 
   <script>
@@ -37,11 +37,18 @@
 
       properties: {
         path: String,
-        uid: String
+        selectedTab: {
+          type: String,
+          notify: true
+        }
       },
 
       _path: function(path, uid) {
         return path + '/' + uid + '/shoppingList'
+      },
+
+      _showCategories: function() {
+        return this.selectedTab = 'categories'
       }
 
     });
