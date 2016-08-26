@@ -1,6 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../firebase-ui-auth/firebase-ui-styles.html">
 <link rel="import" href="../firebase-ui-auth/firebase-ui-auth.html">
 <link rel="import" href="../facebook/facebook-init.html">
@@ -22,27 +21,43 @@
         /*background-color: lightGreen;*/
       }
     </style>
-    <firebase-auth id="auth" user="{{user}}" on-status-known-changed="_startUi"></firebase-auth>
     <div id="container"></div>
     <shopper-facebook app-id="1729227607329104"></shopper-facebook>
   </template>
   <script>
     Polymer({
+
       is: 'shopper-auth',
 
       properties: {
-        user: {
-          type: Object,
-          notify: true
-        }
+        statusKnown: {
+          type: Boolean,
+          observer: '_startUi'
+        },
+        authTarget: HTMLElement
       },
+
+      observers: [
+        '_authTargetChanged(authTarget, isAttached)'
+      ],
 
       ready: function() {
         this.scopeSubtree(this.$.container, true);
       },
 
-      _startUi: function(e, statusKnown) {
-        if (statusKnown.value) {
+      _authTargetChanged: function(authTarget, isAttached) {
+        if (!isAttached) {
+          return;
+        }
+        // Support element id references
+        if (typeof authTarget === 'string') {
+          this.authTarget = this.domHost ? this.domHost.$[authTarget] :
+            Polymer.dom(this.ownerDocument).querySelector('#' + authTarget);
+        }
+      },
+
+      _startUi: function(statusKnown) {
+        if (statusKnown) {
           var facebook = new firebase.auth.FacebookAuthProvider();
           facebook.addScope('public_profile');
           facebook.addScope('email');
@@ -61,7 +76,8 @@
             // Terms of service url.
             'tosUrl': '/tos',
             'callbacks': {
-              'signInSuccess': function(currentUser, credential, redirectUrl) {
+              'signInSuccess': function(currentUser, credential,
+                redirectUrl) {
                 FB.api('/me/friends', {
                   access_token: credential.accessToken
                 }, function(response) {
@@ -73,7 +89,7 @@
           };
 
           // Initialize the FirebaseUI Widget using Firebase.
-          var ui = new firebaseui.auth.AuthUI(this.$.auth.auth);
+          var ui = new firebaseui.auth.AuthUI(this.authTarget.auth);
           // The start method will wait until the DOM is loaded.
           ui.start(this.$.container, uiConfig);
         }

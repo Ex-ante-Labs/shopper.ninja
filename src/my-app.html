@@ -24,7 +24,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-styles/typography.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="shopper-theme.html">
 <link rel="import" href="my-icons.html">
 
@@ -62,11 +64,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: var(--light-primary-color);
       }
 
-      .sign-in {
-        /*text-decoration: none;*/
+      [sign-in] {
         color: white;
-        @apply(--paper-font-subhead);
+        /*@apply(--paper-font-subhead);*/
+        text-decoration: inherit;
       }
+
+      /*paper-button {
+        --paper-button: {
+          text-transform: inherit;
+        }
+      }*/
 
       paper-tabs {
         --paper-tabs-selection-bar-color: var(--light-accent-color);
@@ -83,14 +91,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-location route="{{route}}" query-params="{{queryParams}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
-    <firebase-app auth-domain="shopper-ninja.firebaseapp.com" database-url="https://shopper-ninja.firebaseio.com" api-key="AIzaSyAifUgLHveo3BH3fr7ovdfySgB7vRSyX-0" storage-bucket="shopper-ninja.appspot.com">
+    <firebase-app auth-domain="shopper-ninja.firebaseapp.com" database-url="https://shopper-ninja.firebaseio.com"
+        api-key="AIzaSyAifUgLHveo3BH3fr7ovdfySgB7vRSyX-0" storage-bucket="shopper-ninja.appspot.com">
     </firebase-app>
+    <firebase-auth id="auth" user="{{user}}" status-known="{{statusKnown}}"></firebase-auth>
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
       <app-drawer swipe-open id="drawer">
         <app-toolbar>Menu</app-toolbar>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation" on-iron-activate="_drawerSelected">
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation"
+            on-iron-activate="_drawerSelected">
           <a name="list" href="/list">Shopping list</a>
           <a name="receipts" href="/receipts">Receipts</a>
           <a name="family" href="/family">Family</a>
@@ -106,7 +117,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <div main-title>[[localize('mainTitle')]]</div>
-            <a class="sign-in" href="/auth">[[localize('signIn')]]</a>
+            <a sign-in href="/auth" tabindex="-1">
+              <paper-button raised>[[localize('signIn')]]</paper-button>
+            </a>
           </app-toolbar>
           <paper-tabs selected=0>
             <paper-tab>[[localize('shoppingList')]]</paper-tab>
@@ -114,8 +127,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </paper-tabs>
         </app-header>
 
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-          <shopper-auth name="auth" user="{{user}}"></shopper-auth>
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404"
+            role="main">
+          <shopper-auth name="auth" status-known="[[statusKnown]]" auth-target="auth"></shopper-auth>
           <shopper-list name="list" path="users" uid="[[user.uid]]"></shopper-list>
           <shopper-tos name="tos"></shopper-tos>
           <shopper-404 name="404"></shopper-404>
