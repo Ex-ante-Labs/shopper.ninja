@@ -1,13 +1,18 @@
 "use strict"
 import {
-  streamArray,
-  prepareOptions,
-  log
+  stream,
+  streamArray
 } from './lib/ed-ilyin'
+import {
+  getCategories
+} from './lib/e-maxima'
 
 const languages = ['en', 'ru', 'lv']
+
 streamArray(languages)
-  .pipe(prepareOptions(
-    'https://beta.e-maxima.lv/nextgenapi/api/products/GetCategories'))
-  .pipe(log)
-  // .pipe(log)
+  .pipe(getCategories)
+  .pipeStreamThenArray(c => c.data[0].Childs.map(sc => ({
+    meta: Object.assign({}, c.meta),
+    data: sc
+  })))
+  .pipeStreamThen(console.log)
