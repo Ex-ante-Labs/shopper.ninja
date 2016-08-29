@@ -22,9 +22,11 @@
   },
   "homepage": "https://github.com/Ex-ante-Labs/shopper.ninja#readme",
   "dependencies": {
+    "firebase": "^3.2.1",
+    "node-uuid": "^1.4.7",
     "request": "^2.74.0",
     "request-promise-native": "^1.0.3",
-    "firebase": "^3.2.1"
+    "through2": "^2.0.1"
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.8.0",

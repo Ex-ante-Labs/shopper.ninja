@@ -1,0 +1,50 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+
+<dom-module id="shopper-list">
+
+  <template>
+
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+
+      paper-fab {
+        position: fixed;
+        right: 25px;
+        bottom: 30px;
+        --paper-fab-keyboard-focus-background: var(--accent-color-900);
+      }
+    </style>
+
+    <firebase-query path="[[_path(path, uid)]]" data="{{shoppingList}}"></firebase-query>
+
+    <template is="dom-repeat" items="[[shoppingList]]">
+      <paper-icon-item>[[item.n]]</paper-icon-item>
+    </template>
+    <paper-fab icon=add></paper-fab>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'shopper-list',
+
+      properties: {
+        path: String,
+        uid: String
+      },
+
+      _path: function(path, uid) {
+        return path + '/' + uid + '/shoppingList'
+      }
+
+    });
+  </script>
+
+</dom-module>

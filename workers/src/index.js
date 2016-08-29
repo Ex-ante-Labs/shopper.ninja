@@ -1,22 +1,13 @@
 "use strict"
 import {
-  initializeApp,
-  database
-} from 'firebase'
-import {
-  jar,
-  get
-} from 'request-promise-native'
+  streamArray,
+  prepareOptions,
+  log
+} from './lib/ed-ilyin'
 
-initializeApp({
-  serviceAccount: "firebase-credentials.json",
-  databaseURL: "https://shopper-ninja.firebaseio.com"
-})
-
-// get langugage scepicig jar
-const options = {
-  uri: 'https://beta.e-maxima.lv/en',
-  jar: jar()
-}
-
-const h = await get(options)
+const languages = ['en', 'ru', 'lv']
+streamArray(languages)
+  .pipe(prepareOptions(
+    'https://beta.e-maxima.lv/nextgenapi/api/products/GetCategories'))
+  .pipe(log)
+  // .pipe(log)
