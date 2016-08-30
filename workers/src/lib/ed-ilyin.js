@@ -23,7 +23,7 @@ class StreamArray extends Readable {
     }
   }
   _read() {
-    console.log('readArray', this._index)
+    // console.log('readArray', this._index)
     if (this._index < this._array.length) {
       this.push(this._array[this._index++])
     } else { this.push(null) }
@@ -43,7 +43,7 @@ class Stream extends Transform {
     }
   }
   _transform(obj, e, cb) {
-    console.log('transform', obj)
+    // console.log('transform', obj)
     this.push(this._fn(obj))
     return cb()
   }
@@ -52,20 +52,27 @@ class Stream extends Transform {
 export const stream = fn => new Stream(fn)
 
 class StreamAsync extends Stream {
-  async _read() {
+  constructor(fn) {
+    super(fn)
+    this._promises = []
+  }
+  _transform(obj, e, cb) {
+    // console.log('transormAsync', obj)
+    this._promises.push(this._fn(obj))
+    return cb()
+  }
+  async _flush(cb) {
     try {
-      console.log('asyncRead', this._buffer)
-      if (this._buffer.length) {
-        const promises = this._buffer.map(i => then.call(this, i))
-        this._buffer = []
-        await Promise.all(promises)
-        return this.push(null)
-        async function then(promise) {
-          try {
-            const result = await promise
-            return this.push(result)
-          } catch (e) { console.log(e) }
-        }
+      // console.log('asyncRead', this._promises)
+      const promises = this._promises.map(p => then.call(this, p))
+      await Promise.all(promises)
+      this.push(null)
+      return cb()
+      async function then(promise) {
+        try {
+          const result = await promise
+          return this.push(result)
+        } catch (e) { console.log(e) }
       }
     } catch (e) { console.log(e) }
   }
