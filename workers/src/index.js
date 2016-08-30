@@ -4,7 +4,8 @@ import {
   streamArray,
   streamMap,
   metaMap,
-  base64Url
+  base64Url,
+  log
 } from './lib/ed-ilyin'
 import {
   getCategories
@@ -18,19 +19,18 @@ const maxima2Shopper = stream(category => {
   const update = {}
   const [key, value] = category2Update(category.data)
   update[`products/${key}`] = value
-  // console.log(update)
   return update
   function category2Update(c) {
     const key = base64Url(c.CategoryId)
-    update[`locales/${category.meta.language}/name_${key}`] = c.Name
+    update[`locales/${category.meta.language}/categoryName_${key}`] = c.Name
     return [
       key,
       {
         image: `https://beta.e-maxima.lv${c.SmallImageUrl}`,
         sub: c.ChildCategories
           .map(category2Update)
-          .reduce((o,[key, value])=>{
-            o[key]=value
+          .reduce((o, [key, value]) => {
+            o[key] = value
             return o
           }, {})
       }
@@ -43,4 +43,4 @@ streamArray(languages)
   .pipe(streamMap(c => metaMap(c, c.data[0].Childs)))
   .pipe(maxima2Shopper)
   .pipe(updateDb())
-  .pipeStream(console.log)
+  .pipe(log)

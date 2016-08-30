@@ -4,7 +4,8 @@ import {
 } from 'node-uuid'
 import {
   Readable,
-  Transform
+  Transform,
+  Writable
 } from 'stream'
 
 class StreamArray extends Readable {
@@ -82,3 +83,11 @@ export const base64Url = uuid => Buffer(parse(uuid))
   .replace(/\+/g, '-')
   .replace(/\//g, '_')
   .replace(/=/g, '')
+
+export const log = new Writable({
+  objectMode: true,
+  write(obj, e, cb) {
+    console.log(obj)
+    return cb()
+  }
+})
