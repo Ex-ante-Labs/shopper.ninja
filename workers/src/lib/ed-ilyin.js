@@ -1,8 +1,4 @@
-"use strict";
-// import {
-//   initializeApp,
-//   database
-// } from 'firebase'
+"use strict"
 import {
   parse
 } from 'node-uuid'
@@ -16,11 +12,6 @@ class StreamArray extends Readable {
     super({ objectMode: true })
     this._array = array
     this._index = 0
-    this.pipeStream = fn => {
-      const stream = new Stream(fn)
-      this.pipe(stream)
-      return stream
-    }
   }
   _read() {
     // console.log('readArray', this._index)
@@ -29,7 +20,6 @@ class StreamArray extends Readable {
     } else { this.push(null) }
   }
 }
-
 export const streamArray = array => new StreamArray(array)
 
 class Stream extends Transform {
@@ -43,13 +33,19 @@ class Stream extends Transform {
     }
   }
   _transform(obj, e, cb) {
-    // console.log('transform', obj)
-    this.push(this._fn(obj))
+    return cb(null, this._fn(obj))
+  }
+}
+export const stream = fn => new Stream(fn)
+
+class StreamMap extends Stream {
+  _transform(obj, e, cb) {
+    const array = this._fn(obj)
+    array.map(i => this.push(i))
     return cb()
   }
 }
-
-export const stream = fn => new Stream(fn)
+export const streamMap = fn => new StreamMap(fn)
 
 class StreamAsync extends Stream {
   constructor(fn) {
@@ -57,38 +53,32 @@ class StreamAsync extends Stream {
     this._promises = []
   }
   _transform(obj, e, cb) {
-    // console.log('transormAsync', obj)
-    this._promises.push(this._fn(obj))
+    const promise = then.call(this)
+    this._promises.push(promise)
     return cb()
+    async function then() {
+      try {
+        const result = await this._fn(obj)
+        return this.push(result)
+      } catch (e) { console.log(e) }
+    }
   }
   async _flush(cb) {
     try {
-      // console.log('asyncRead', this._promises)
-      const promises = this._promises.map(p => then.call(this, p))
-      await Promise.all(promises)
-      this.push(null)
-      return cb()
-      async function then(promise) {
-        try {
-          const result = await promise
-          return this.push(result)
-        } catch (e) { console.log(e) }
-      }
+      await Promise.all(this._promises)
+      return cb(null, null)
     } catch (e) { console.log(e) }
   }
 }
-
 export const streamAsync = fn => new StreamAsync(fn)
 
-// initializeApp({
-//   serviceAccount: "firebase-credentials.json",
-//   databaseURL: "https://shopper-ninja.firebaseio.com"
-// })
+export const metaMap = (obj, array) => array.map(i => ({
+  meta: obj.meta,
+  data: i
+}))
 
-function base64url(uuid) {
-  return Buffer(parse(uuid))
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '')
-}
+export const base64Url = uuid => Buffer(parse(uuid))
+  .toString('base64')
+  .replace(/\+/g, '-')
+  .replace(/\//g, '_')
+  .replace(/=/g, '')
