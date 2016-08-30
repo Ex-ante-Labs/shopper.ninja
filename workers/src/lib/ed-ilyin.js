@@ -6,58 +6,72 @@
 import {
   parse
 } from 'node-uuid'
+import {
+  Readable,
+  Transform
+} from 'stream'
 
-class Stream {
-  constructor(fn) {
-    const _buffer = []
-    this.write = obj => _buffer.push(fn(obj))
-    this.pipe = stream => {
-      _buffer.map(obj => stream.write(obj))
-      return stream
-    }
-    this.pipeThen = stream => {
-      _buffer.map(then)
-      return stream
-      async function then(promise) {
-        return stream.write(await promise)
-      }
-    }
+class StreamArray extends Readable {
+  constructor(array) {
+    super({ objectMode: true })
+    this._array = array
+    this._index = 0
     this.pipeStream = fn => {
       const stream = new Stream(fn)
       this.pipe(stream)
       return stream
     }
-    this.pipeStreamThen = fn => {
-      return this.pipeStream(then)
-      async function then(promise) {
-        return fn(await promise)
-      }
+  }
+  _read() {
+    console.log('readArray', this._index)
+    if (this._index < this._array.length) {
+      this.push(this._array[this._index++])
+    } else { this.push(null) }
+  }
+}
+
+export const streamArray = array => new StreamArray(array)
+
+class Stream extends Transform {
+  constructor(fn) {
+    super({ objectMode: true })
+    this._fn = fn
+    this.pipeStream = fn => {
+      const stream = new Stream(fn)
+      this.pipe(stream)
+      return stream
     }
-    this.pipeStreamThenArray = fn => {
-      return this.pipeStream(then)
-      async function then(promise) {
-        return fn(await promise)
-      }
-    }
-    this.pipeStreamThenMap = fn => {
-      return this.pipeStreamThen(a => a.map(fn))
-    }
-    this.pipeStreamThenDataMap = fn => {
-      return this.pipeStreamThen(o => fn(o.data.map(i => ({
-        meta: Object.assign({}, o.meta),
-        data: i
-      }))))
-    }
+  }
+  _transform(obj, e, cb) {
+    console.log('transform', obj)
+    this.push(this._fn(obj))
+    return cb()
   }
 }
 
 export const stream = fn => new Stream(fn)
 
-export const streamArray = array => {
-  const stream = new Stream(i => i)
-  array.map(stream.write)
-  return stream
+class StreamAsync extends Stream {
+  async _read() {
+    try {
+      console.log('asyncRead', this._buffer)
+      if (this._buffer.length) {
+        const promises = this._buffer.map(i => then.call(this, i))
+        this._buffer = []
+        await Promise.all(promises)
+        return this.push(null)
+        async function then(promise) {
+          try {
+            const result = await promise
+            return this.push(result)
+          } catch (e) { console.log(e) }
+        }
+      }
+    } catch (e) { console.log(e) }
+  }
 }
+
+export const streamAsync = fn => new StreamAsync(fn)
 
 // initializeApp({
 //   serviceAccount: "firebase-credentials.json",
